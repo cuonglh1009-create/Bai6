@@ -328,16 +328,25 @@ class BorrowingSlip:
         self._items.append(item)
         print(f"Đã thêm thiết bị {device.device_id} vào phiếu {self.slip_id}")
     def return_device(self, device_id: str, returned_date: datetime) -> float:
-         if not device_id or not device_id.strip():
+        if not device_id or not device_id.strip():
             raise ValueError("Mã thiết bị không hợp lệ")
-            item = next((it for it in self._items if it.device.device_id == device_id), None)
-        if item is None:
+
+        matches = [it for it in self._items if it.device.device_id == device_id]
+        if not matches:
             raise DeviceNotInSlipException(device_id)
-        if item is None:
-            raise DeviceNotInSlipException(device_id)
+        item = next((it for it in matches if not it.is_returned), matches[-1])
 
         if item.is_returned:
             raise DeviceAlreadyReturnedException(device_id)
+
+        if returned_date < item.borrowed_date:
+            raise InvalidReturnDateException("Ngày trả không được trước ngày mượn")
+
+        item.return_device(returned_date)
+        late_days = item.days_late()
+        fee = late_days * self.LATE_FEE_PER_DAY
+        print(f"Đã trả thiết bị {device_id}. Phí muộn: {fee:,.0f} VND")
+        return fee
 
         # Kiểm tra ngày
         if returned_date < item.borrowed_date:
