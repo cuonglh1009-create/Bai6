@@ -326,12 +326,7 @@ class BorrowingSlip:
         item = BorrowItem(device, self.borrowed_date, due, from_period, to_period)
         device.mark_as_borrowed()
         self._items.append(item)
-
-        due = self.borrowed_date + timedelta(days=borrow_days)
-        item = BorrowItem(device, self.borrowed_date, due)
-        self._items.append(item)
         print(f"Đã thêm thiết bị {device.device_id} vào phiếu {self.slip_id}")
-
     def return_device(self, device_id: str, returned_date: datetime) -> float:
          if not device_id or not device_id.strip():
             raise ValueError("Mã thiết bị không hợp lệ")
