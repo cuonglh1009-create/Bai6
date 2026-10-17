@@ -353,7 +353,8 @@ class BorrowingSlip:
         total = 0.0
         for item in self._items:
             if item.is_returned:
-                total += item.days_late() * self.LATE_FEE_PER_DAY * 2
+              def calculate_total_late_fee(self):
+                    return sum(i.days_late() * self.LATE_FEE_PER_DAY for i in self._items if i.is_returned)
         return total
 
 
