@@ -315,9 +315,12 @@ class BorrowingSlip:
         if borrow_days > device.get_max_borrow_days():
             raise InvalidBorrowPeriodException(device.device_id, borrow_days, device.get_max_borrow_days())
 
-    def add_device(self, device: Device, borrow_days: int):
-        device.mark_as_borrowed()
+    def add_device(self, device, borrow_days, from_period=1, to_period=1):
         self._validate_borrowing(device, borrow_days)
+        due = self.borrowed_date + timedelta(days=borrow_days)
+        item = BorrowItem(device, self.borrowed_date, due, from_period, to_period)
+        device.mark_as_borrowed()
+        self._items.append(item)
 
         due = self.borrowed_date + timedelta(days=borrow_days)
         item = BorrowItem(device, self.borrowed_date, due)
