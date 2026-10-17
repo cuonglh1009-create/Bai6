@@ -240,14 +240,19 @@ class TeachingAssistant(IBorrower):
 
 #  BORROW ITEM
 class BorrowItem:
-    def __init__(self, device: Device, borrowed_date: datetime, due_date: datetime):
+    def __init__(self, device: Device, borrowed_date: datetime, due_date: datetime,
+                 from_period: int = 1, to_period: int = 1):
         if device is None:
             raise ValueError("Device không được null")
         if due_date < borrowed_date:
             raise ValueError("DueDate phải sau hoặc bằng BorrowedDate")
+        if to_period < from_period:
+            raise ValueError("Tiết kết thúc phải sau hoặc bằng tiết bắt đầu")
         self.device = device
         self.borrowed_date = borrowed_date
         self.due_date = due_date
+        self.from_period = from_period
+        self.to_period = to_period
         self._returned_date: Optional[datetime] = None
 
     @property
