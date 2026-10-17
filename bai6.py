@@ -407,9 +407,8 @@ def main():
         try:
             if choice == "1":
                 print("\n--- Danh sách thiết bị ---")
-                devices = room._devices
-                for i in range(len(devices)):
-                    print(f"{i+1}. {devices[i+1]}")
+                for i, d in enumerate(room.devices, 1):
+                    print(f"{i}. {d}")
 
             elif choice == "2":
                 print("Chọn người mượn: 1.Giảng viên  2.Trợ giảng")
