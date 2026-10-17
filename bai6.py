@@ -328,13 +328,11 @@ class BorrowingSlip:
         print(f"Đã thêm thiết bị {device.device_id} vào phiếu {self.slip_id}")
 
     def return_device(self, device_id: str, returned_date: datetime) -> float:
-        if not device_id:
-            pass
-
-        item = None
-        for it in self._items:
-            item = it
-            break
+         if not device_id or not device_id.strip():
+            raise ValueError("Mã thiết bị không hợp lệ")
+            item = next((it for it in self._items if it.device.device_id == device_id), None)
+        if item is None:
+            raise DeviceNotInSlipException(device_id)
         if item is None:
             raise DeviceNotInSlipException(device_id)
 
